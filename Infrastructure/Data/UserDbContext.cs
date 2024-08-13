@@ -10,4 +10,11 @@ public class UserDbContext : DbContext, IUserDbContext
     public DbSet<User> Users { get; set; }
     public DbContext Context => this;
     public Task<int> SaveChanges(CancellationToken cancellationToken) => SaveChangesAsync(cancellationToken);
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+            .ToTable("Users")
+            .HasKey(o => o.Id);
+    }
 }

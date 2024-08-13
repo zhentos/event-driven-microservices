@@ -16,6 +16,8 @@ namespace Infrastructure
             services.AddDbContext<UserDbContext>(options =>
                         options.UseNpgsql(configuration.GetConnectionString("UsersConnection")));
 
+            //Commented code is a mechanism to deal with entity framework migrations.
+
             //var migrationsAssembly = Assembly.GetExecutingAssembly().GetName().Name;
 
             //services.AddDbContext<UserDbContext>(options =>
