@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+
+  order:
+    image: order:latest
+    build:
+      context: .
+      dockerfile: Order.API/Dockerfile
+    ports:
+      - "8080:8080"  # Map host port 8080 to container port 8080
+      - "8081:8081"  # Map host port 8081 to container port 8081
+    networks:
+      - my-network
+
+  user:
+    image: user:latest
+    build:
+      context: .
+      dockerfile: User.API/Dockerfile
+    ports:
+      - "8082:8080"  # Map host port 8082 to container port 8080
+      - "8083:8081"  # Map host port 8083 to container port 8081
+    networks:
+      - my-network
+
+  notification:
+    image: notification:latest
+    build:
+      context: .
+      dockerfile: NotificationService/Dockerfile
+    ports:
+      - "8084:80"  # Map host port 8084 to container port 80
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
