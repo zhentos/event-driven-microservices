@@ -9,13 +9,13 @@ public class RabbitMqConsumer : BackgroundService
     private readonly IConnection _connection;
     private readonly IModel _channel;
 
-    public RabbitMqConsumer(string hostName, string userName, string password)
+    public RabbitMqConsumer()
     {
         var factory = new ConnectionFactory()
         {
-            HostName = hostName,
-            UserName = userName,
-            Password = password
+            HostName = "hostName",
+            UserName = "guest",
+            Password = "guest"
         };
 
         _connection = factory.CreateConnection();

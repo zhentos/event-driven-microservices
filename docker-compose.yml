@@ -2,16 +2,25 @@ version: '3.8'
 
 services:
 
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"  # RabbitMQ default port
+      - "15672:15672" # RabbitMQ management UI
+    networks:
+      - my-network
+
   order:
     image: order:latest
     build:
       context: .
       dockerfile: Order.API/Dockerfile
     ports:
-      - "8080:8080"  # Map host port 8080 to container port 8080
-      - "8081:8081"  # Map host port 8081 to container port 8081
+      - "8080:8080"
     networks:
       - my-network
+    environment:
+      - RabbitMQ__HostName=host.docker.internal  # Use host.docker.internal to access the host
 
   user:
     image: user:latest
@@ -19,10 +28,11 @@ services:
       context: .
       dockerfile: User.API/Dockerfile
     ports:
-      - "8082:8080"  # Map host port 8082 to container port 8080
-      - "8083:8081"  # Map host port 8083 to container port 8081
+      - "8081:8080"
     networks:
       - my-network
+    environment:
+      - RabbitMQ__HostName=host.docker.internal  # Use host.docker.internal to access the host
 
   notification:
     image: notification:latest
@@ -30,9 +40,11 @@ services:
       context: .
       dockerfile: NotificationService/Dockerfile
     ports:
-      - "8084:80"  # Map host port 8084 to container port 80
+      - "8082:8080"
     networks:
       - my-network
+    environment:
+      - RabbitMQ__HostName=host.docker.internal  # Use host.docker.internal to access the host
 
 networks:
   my-network:
