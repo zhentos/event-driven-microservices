@@ -5,10 +5,15 @@ services:
   rabbitmq:
     image: rabbitmq:management
     ports:
-      - "5672:5672"  # RabbitMQ default port
-      - "15672:15672" # RabbitMQ management UI
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - my-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
 
   order:
     image: order:latest
@@ -45,6 +50,9 @@ services:
       - my-network
     environment:
       - RabbitMQ__HostName=host.docker.internal  # Use host.docker.internal to access the host
+    depends_on:
+     rabbitmq:
+      condition: service_healthy
 
 networks:
   my-network:
