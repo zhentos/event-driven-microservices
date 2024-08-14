@@ -1,7 +1,9 @@
 ﻿using Application.Order.Commands.Create;
 using Application.Order.Queries.GetById;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Order.API.Application.Queries.GetAll;
 using Order.API.RabbitMQ;
 using Shared.Dtos.Order;
@@ -43,9 +45,17 @@ public static class OrdersApi
         return TypedResults.NotFound();
     }
 
-    public static async Task<Results<Ok<Guid>, BadRequest<string>>> CreateOrder(IMediator mediator, IMessageProducer messageProducer, CreateOrderDto dto)
+    public static async Task<Results<Ok<Guid>, BadRequest<object>>> CreateOrder(IMediator mediator,
+        IMessageProducer messageProducer,
+        [FromServices] IValidator<CreateOrderDto> orderValidator,
+        CreateOrderDto dto)
     {
-        //todo add validation 
+        var validationResult = await orderValidator.ValidateAsync(dto);
+        if (!validationResult.IsValid)
+        {
+            return TypedResults.BadRequest(validationResult.Errors as object);
+        }
+
         var result = await mediator.Send(new CreateOrderRequest(dto.UserId, dto.Title));
 
         if (result.IsOk)
@@ -62,6 +72,6 @@ public static class OrdersApi
             return TypedResults.Ok(result.Data);
         }
 
-        return TypedResults.BadRequest(result.Message);
+        return TypedResults.BadRequest(result.Message as object);
     }
 }
