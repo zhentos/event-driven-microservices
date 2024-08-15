@@ -16,7 +16,7 @@ HOW TO RUN THE APPLICATION:
 NOTE!
 Next on the list is the implication that it is running on the windows operating system!
 
-1. Restore orders and users DB's using backup from SolutionItems folder. 
+1. Restore orders and users DB's using backup files db_orders.backup and db_users.backup. You can find the files in the same folder where the .sln file was places. 
 2. Change the connection string to one that would be relevant to your database connection.
 3. Run docker application.
 4. Open Windows PowerShell and navigate to the folder where docker-compose.yml file is located (it was added in SolutionItems folder).
